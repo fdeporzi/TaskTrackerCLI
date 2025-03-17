@@ -1,8 +1,6 @@
-print("sup")
+print("Welcome to Task CLI")
+print("Type 'help' to see the list of commands")
 
-
-
-#new test comment
 
 
 
