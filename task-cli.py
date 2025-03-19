@@ -1,46 +1,120 @@
+import json
+import os
+import sys
+from datetime import datetime
+
+# TODO: List task function
+
+
 def main():
     print("Welcome to Task CLI")
     print("Type 'help' to see the list of commands")
 
     while True:
-        user_input = input("Enter a command: ")
+        user_input = input("\nEnter a command: ")
 
         #exit command
         if user_input.lower() == "exit":
             print("Exiting Task CLI...")
             break
 
+        #splits input with command and argument
+        parts = user_input.split()
+        #checks if parts is empty
+        if not parts:
+            print("Please enter a command")
+            continue
+
+        command = parts[0] #command is the first part of the input
+        args = parts[1:] #argument
+
+        if command == "help":
+            print("Available commands:")
+            print("add <task>")
+            print("update <task_id> <new_task>")
+            print("delete <task_id>")
+            print("list")
+            print("mark-done <task_id>")
+            print("mark-in-progress <task_id>")
+            print("list done")
+            print("list not-done")
+            print("list in-progress")
+            print("exit")
+
+        
+        elif command == "add":
+            if len(args) < 1: #shows error if no task is entered
+                print("Please use format: add \"task descritpion\"")
+            else:
+                description = " ".join(args) #joins the arguments to form a single string
+                print(f"Adding task: {description}")
+
+                add_task(description) #calls add_task function
+
+        
+        elif command == "list":
+            status_filter = args[0] if args else None #checks if there is an argument for a task status and assigns it to status_filter
+            print(f"Listing tasks" + (f" with status: {status_filter}" if status_filter else ""))
+
+            # call list_tasks function here
+
+        #add more command handlers here
+            
+        else:
+            print(f"Unknown command: {command}")
+            print("Available commands: add, list, update, delete, mark-in-progress, mark-done")
+
+
+
+def load_tasks():
+    # check if tasks.json exists
+    if not os.path.exists("tasks.json"):
+        return []
+
+    # read tasks from file
+    with open("tasks.json", "r") as file:
+        tasks = json.load(file)
+
+    return tasks
+
+def save_tasks(tasks):
+    # write tasks to file
+    with open("tasks.json", "w") as file:
+        json.dump(tasks, file, indent=4)
+
+def add_task(description):
+    # load tasks from file
+    tasks = load_tasks()
+
+    # create new task
+    new_task = {
+        "id": generate_task_id(),
+        "description": description,
+        "status": "not-done",
+        "created_at": datetime.now().isoformat(),
+        "updated_at": datetime.now().isoformat()
+    }
+
+    # add new task to tasks
+    tasks.append(new_task)
+
+    # save tasks to file
+    save_tasks(tasks)
+
+    print("Task added successfully")
+
+
+def generate_task_id():
+    tasks = load_tasks()
+
+    # if tasks is empty, give new task id of 1
+    if not tasks:
+        return 1
+
+    # get the last task id and increment by 1
+    return tasks[-1]["id"] + 1
+
 if __name__ == "__main__":
     main()
 
 
-
-
-
-
-
-
-# 1. create loop to keep the program running
-# 2. get user input
-# 3. check if user input is valid
-# 4. if valid, run the command
-# 5. if invalid, print error message
-
-
-
-# add, update delete tasks
-# list tasks
-# mark tasks as done or in progress
-# list tasks that are done
-# list tasks that are in progress
-# list tasks that are not done
-
-"""
-You can use any programming language to build this project.
-Use positional arguments in command line to accept user inputs.
-Use a JSON file to store the tasks in the current directory.
-The JSON file should be created if it does not exist.
-Use the native file system module of your programming language to interact with the JSON file.
-Do not use any external libraries or frameworks to build this project.
-Ensure to handle errors and edge cases gracefully.
-"""
