@@ -3,9 +3,6 @@ import os
 import sys
 from datetime import datetime
 
-# TODO: List task function
-
-
 def main():
     print("Welcome to Task CLI")
     print("Type 'help' to see the list of commands")
