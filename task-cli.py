@@ -55,11 +55,47 @@ def main():
         elif command == "list":
             status_filter = args[0] if args else None #checks if there is an argument for a task status and assigns it to status_filter
             print(f"Listing tasks" + (f" with status: {status_filter}" if status_filter else ""))
-
             # call list_tasks function here
+            list_tasks(status_filter)
 
         #add more command handlers here
-            
+        elif command == "update":
+            if len(args) < 2:
+                print("Please use format: update <task_id> <new_task>")
+            else:
+                task_id = int(args[0])
+                new_description = " ".join(args[1:])
+                print(f"Updating task {task_id} to: {new_description}")
+
+                # call update_task function here
+
+        elif command == "delete":
+            if len(args) < 1:
+                print("Please use format: delete <task_id>")
+            else:
+                task_id = int(args[0])
+                print(f"Deleting task {task_id}")
+
+                # call delete_task function here
+
+        elif command == "mark-done":
+            if len(args) < 1:
+                print("Please use format: mark-done <task_id>")
+            else:
+                task_id = int(args[0])
+                print(f"Marking task {task_id} as done")
+
+                # call mark_done_task function here
+
+        elif command == "mark-in-progress":
+            if len(args) < 1:
+                print("Please use format: mark-in-progress <task_id>")
+            else:
+                task_id = int(args[0])
+                print(f"Marking task {task_id} as in-progress")
+
+                # call mark_in_progress_task function here
+
         else:
             print(f"Unknown command: {command}")
             print("Available commands: add, list, update, delete, mark-in-progress, mark-done")
@@ -113,6 +149,15 @@ def generate_task_id():
 
     # get the last task id and increment by 1
     return tasks[-1]["id"] + 1
+
+def list_tasks(status_filter=None):
+    tasks = load_tasks()
+
+    for task in tasks:
+        if status_filter and task["status"] != status_filter:
+            continue
+
+        print(f'{task["id"]}: {task["description"]} ({task["status"]})')
 
 if __name__ == "__main__":
     main()
