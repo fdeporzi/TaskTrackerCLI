@@ -61,7 +61,12 @@ def main():
             #list done tasks
         elif command == "list" and args[0] == "done":
             print("Listing done tasks")
-            list_tasks("done")
+
+            #check if there are any done tasks
+            if not any(task["status"] == "done" for task in load_tasks()):
+                print("No done tasks found")
+            else:
+                list_tasks("done")
         
         #list todo tasks
         elif command == "list" and args[0] == "not-done":
