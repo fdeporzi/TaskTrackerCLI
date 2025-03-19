@@ -58,7 +58,21 @@ def main():
             # call list_tasks function here
             list_tasks(status_filter)
 
-        #add more command handlers here
+            #list done tasks
+        elif command == "list" and args[0] == "done":
+            print("Listing done tasks")
+            list_tasks("done")
+        
+        #list todo tasks
+        elif command == "list" and args[0] == "not-done":
+            print("Listing not-done tasks")
+            list_tasks("not-done")
+        
+        #list in-progress tasks
+        elif command == "list" and args[0] == "in-progress":
+            print("Listing in-progress tasks")
+            list_tasks("in-progress")
+
         elif command == "update":
             if len(args) < 2:
                 print("Please use format: update <task_id> <new_task>")
@@ -67,7 +81,7 @@ def main():
                 new_description = " ".join(args[1:])
                 print(f"Updating task {task_id} to: {new_description}")
 
-                # call update_task function here
+                update_task(task_id, new_description) #calls update_task function
 
         elif command == "delete":
             if len(args) < 1:
@@ -76,7 +90,7 @@ def main():
                 task_id = int(args[0])
                 print(f"Deleting task {task_id}")
 
-                # call delete_task function here
+                delete_task(task_id)
 
         elif command == "mark-done":
             if len(args) < 1:
@@ -85,7 +99,7 @@ def main():
                 task_id = int(args[0])
                 print(f"Marking task {task_id} as done")
 
-                # call mark_done_task function here
+                mark_done_task(task_id) #calls mark_done_task function
 
         elif command == "mark-in-progress":
             if len(args) < 1:
@@ -94,7 +108,8 @@ def main():
                 task_id = int(args[0])
                 print(f"Marking task {task_id} as in-progress")
 
-                # call mark_in_progress_task function here
+                mark_in_progress_task(task_id) #calls mark_in_progress_task function
+
 
         else:
             print(f"Unknown command: {command}")
@@ -139,6 +154,57 @@ def add_task(description):
 
     print("Task added successfully")
 
+def update_task(task_id, new_description):
+    tasks = load_tasks()
+
+    # find task by id
+    for task in tasks:
+        if task["id"] == task_id:
+            task["description"] = new_description
+            task["updated_at"] = datetime.now().isoformat()
+            break
+    # save tasks to file
+    save_tasks(tasks)
+    print("Task updated successfully")
+
+def delete_task(task_id):
+    tasks = load_tasks()
+
+    # find task by id
+    for task in tasks:
+        if task["id"] == task_id:
+            tasks.remove(task)
+            break
+
+    # save tasks to file
+    save_tasks(tasks)   
+    print("Task deleted successfully")
+
+def mark_done_task(task_id):
+    tasks = load_tasks()
+
+    # find task by id
+    for task in tasks:
+        if task["id"] == task_id:
+            task["status"] = "done"
+            task["updated_at"] = datetime.now().isoformat()
+            break
+    # save tasks to file
+    save_tasks(tasks)
+    print("Task marked as done")
+
+def mark_in_progress_task(task_id):
+    tasks = load_tasks()
+
+    # find task by id
+    for task in tasks:
+        if task["id"] == task_id:
+            task["status"] = "in-progress"
+            task["updated_at"] = datetime.now().isoformat()
+            break
+    # save tasks to file
+    save_tasks(tasks)
+    print("Task marked as in-progress")
 
 def generate_task_id():
     tasks = load_tasks()
